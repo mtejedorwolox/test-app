@@ -2,4 +2,6 @@
   h1
     = t('application.index.messages.welcome')
 
-  = @closed_trades
+  = @trades.each do |trade|
+    div
+      = trade.currency.name + " - " + trade.profit.to_s
