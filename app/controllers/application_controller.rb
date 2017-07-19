@@ -28,6 +28,7 @@ class ApplicationController < ActionController::Base
 
   def index
     process_trades
+    render :index
   end
 
   private
@@ -41,7 +42,8 @@ class ApplicationController < ActionController::Base
     }
 
     Transactions.process(JSON.parse trade_history(params))
-    @trades = Trade.includes(:currency).closed
+    @closed_trades = Trade.includes(:currency).closed.recent
+    @open_trades = Trade.includes(:currency).open.recent
   end
 
   def sign(params)

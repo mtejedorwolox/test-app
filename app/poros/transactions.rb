@@ -31,7 +31,7 @@ class Transactions
 
   def self.process_sells(currency, sells)
     sells.each do |sell_transaction|
-      until (sell_transaction.amount == 0) do
+      until (sell_transaction.amount <= 0) do
         trade = Trade.open.with_currency(currency).oldest.first
         if trade.amount <= sell_transaction.amount
           trade.close(sell_transaction)

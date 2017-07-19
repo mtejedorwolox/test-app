@@ -8,8 +8,6 @@ class Transaction
     @total = total
     @fee = fee
     @type = type
-    apply_fee_to_amount if buy?
-    apply_fee_to_total if sell?
   end
 
   def buy?
@@ -23,6 +21,19 @@ class Transaction
   def merge(transaction)
     @amount += transaction.amount
     @total += transaction.total
+  end
+
+  def close(amount)
+    close_total = (amount / @amount) * @total
+    @total *= (1 - (amount / @amount))
+    @amount -= amount
+    Transaction.new(@date, @rate, amount, close_total, @fee, @type)
+  end
+
+  def apply_fee
+    apply_fee_to_amount if buy?
+    apply_fee_to_total if sell?
+    self
   end
 
   private

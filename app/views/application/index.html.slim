@@ -1,7 +1,23 @@
-.text-center
-  h1
-    = t('application.index.messages.welcome')
-
-  = @trades.each do |trade|
-    div
-      = trade.currency.name + " - " + trade.profit.to_s
+.main
+  .text-center
+    h1
+      = t('application.index.messages.welcome')
+  .main-trades
+    #closed.trades
+      - @closed_trades.each do |trade|
+        .trade
+          .name
+            = trade.currency.name
+          div class=(trade.profit >= 0 ? 'profit' : 'loss')
+            = trade.profit.to_s
+          div class=(trade.profit >= 0 ? 'profit' : 'loss')
+            = trade.profit_percentage.to_s + '%'
+    #open.trades
+      - @open_trades.each do |trade|
+        .trade
+          .name
+            = trade.currency.name
+          .rate
+            = trade.start_rate
+          .total
+            = trade.start_total

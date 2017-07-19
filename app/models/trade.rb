@@ -18,15 +18,19 @@ class Trade < ApplicationRecord
   scope :recent, -> { order(start_date: :desc) }
 
   def close(sell_transaction)
-    sell_transaction.amount -= self.amount
-    self.end_date = sell_transaction.date
-    self.end_rate = sell_transaction.rate
-    self.end_total = sell_transaction.total
+    close_transaction = sell_transaction.close(self.amount)
+    self.end_date = close_transaction.date
+    self.end_rate = close_transaction.rate
+    self.end_total = close_transaction.total
     self.status = :close
     self.save
   end
 
   def profit
     end_total - start_total
+  end
+
+  def profit_percentage
+    (((end_total / start_total) - 1) * 100).truncate(2)
   end
 end

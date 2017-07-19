@@ -11,6 +11,6 @@ class TransactionBuilder
   end
 
   def self.build_with_params(date, rate, amount, total, fee, type)
-    Transaction.new(date, rate, amount, total, fee, type)
+    Transaction.new(date, rate, amount, total, fee, type).apply_fee
   end
 end
