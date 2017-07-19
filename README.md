@@ -1,4 +1,4 @@
-PoloniexMonitoring
+Poloniex Monitoring
 ===============
 
 ## Running local server
