@@ -3,6 +3,7 @@ require 'openssl'
 require 'addressable/uri'
 
 class ApplicationController < ActionController::Base
+  include ApplicationHelper
 
   RESOURCE = RestClient::Resource.new( 'https://www.poloniex.com' )
 
@@ -42,7 +43,6 @@ class ApplicationController < ActionController::Base
     }
 
     Transactions.process(JSON.parse trade_history(params))
-    @closed_trades = Trade.includes(:currency).closed.recent
     @open_trades = Trade.includes(:currency).open.recent
   end
 
