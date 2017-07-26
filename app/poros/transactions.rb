@@ -33,10 +33,16 @@ class Transactions
     sells.each do |sell_transaction|
       until (sell_transaction.amount <= 0) do
         trade = Trade.open.with_currency(currency).oldest.first
-        if trade.amount <= sell_transaction.amount
-          trade.close(sell_transaction)
+        if trade.nil?
+          # add $$$ to loan
+          sell_transaction.amount = 0
         else
-          # split trade into open and closed trade
+          if trade.amount <= sell_transaction.amount
+            trade.close(sell_transaction)
+          else
+            sell_transaction.amount = 0
+            # split trade into open and closed trade
+          end
         end
       end
     end

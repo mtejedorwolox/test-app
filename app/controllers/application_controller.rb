@@ -5,8 +5,6 @@ require 'addressable/uri'
 class ApplicationController < ActionController::Base
   include ApplicationHelper
 
-  RESOURCE = RestClient::Resource.new( 'https://www.poloniex.com' )
-
   # Prevent CSRF attacks by raising an exception.
   # For APIs, you may want to use :null_session instead.
   protect_from_forgery with: :exception
@@ -30,33 +28,5 @@ class ApplicationController < ActionController::Base
   def index
     process_trades
     render :index
-  end
-
-  private
-
-  def process_trades
-    params = {
-      command: 'returnTradeHistory',
-      nonce: nonce,
-      start: 0,
-      end: Time.now.to_i
-    }
-
-    Transactions.process(JSON.parse trade_history(params))
-    @open_trades = Trade.includes(:currency).open.recent
-  end
-
-  def sign(params)
-    encoded_data = Addressable::URI.form_encode( params )
-    OpenSSL::HMAC.hexdigest( 'sha512', Rails.application.secrets.poloniex_secret , encoded_data )
-  end
-
-  def nonce
-    (Time.now.to_f * 10000000).to_i
-  end
-
-  def trade_history(params, currency_pair = 'all')
-    params[:currencyPair] = currency_pair
-    RESOURCE['tradingApi'].post params, { Key: Rails.application.secrets.poloniex_key, Sign: sign(params) }
   end
 end

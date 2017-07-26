@@ -36,11 +36,29 @@
               td class=(trade.profit >= 0 ? 'profit' : 'loss')
                 = trade.profit_percentage.to_s + '%'
     #open.trades
-      - @open_trades.each do |trade|
-        .trade
-          .name
-            = trade.currency.name
-          .rate
-            = trade.start_rate
-          .total
-            = trade.start_total
+      table
+        thead
+          tr
+            th#sort-currency
+              | Currency
+              span.glyphicon.glyphicon-triangle-bottom.float-right.hide
+            th#sort-start-date
+              | Start Date
+              span.glyphicon.glyphicon-triangle-bottom.float-right.selected
+            th#sort-profit-loss
+              | Profit/Loss (BTC)
+              span.glyphicon.glyphicon-triangle-bottom.float-right.hide
+            th#sort-profit-loss-percentage
+              | Profit/Loss (%)
+              span.glyphicon.glyphicon-triangle-bottom.float-right.hide
+        tbody
+          - open_trades.each do |trade|
+            tr
+              td
+                = trade.currency.name
+              td
+                = trade.start_date.strftime("%d/%m/%Y %H:%M")
+              td class=(trade.profit >= 0 ? 'profit' : 'loss')
+                = trade.profit.to_s
+              td class=(trade.profit >= 0 ? 'profit' : 'loss')
+                = trade.profit_percentage.to_s + '%'
