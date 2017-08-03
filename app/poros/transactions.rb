@@ -32,7 +32,7 @@ class Transactions
   def self.process_sells(currency, sells)
     sells.each do |sell_transaction|
       until (sell_transaction.amount <= 0) do
-        trade = Trade.open.with_currency(currency).oldest.first
+        trade = Trade.open.with_currency(currency).older_than(sell_transaction.date).first
         if trade.nil?
           # add $$$ to loan
           sell_transaction.amount = 0
@@ -40,8 +40,7 @@ class Transactions
           if trade.amount <= sell_transaction.amount
             trade.close(sell_transaction)
           else
-            sell_transaction.amount = 0
-            # split trade into open and closed trade
+            trade.split(sell_transaction)
           end
         end
       end
